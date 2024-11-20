@@ -354,7 +354,7 @@ func (bzweb3 *BeatozWeb3) VmCall(from, to types.Address, height int64, data []by
 }
 
 func (bzweb3 *BeatozWeb3) VmEstimateGas(from, to types.Address, height int64, data []byte) (*ctrlertypes.VMCallResult, error) {
-	req, err := bzweb3.NewRequest("vm_call", from, to, strconv.FormatInt(height, 10), data)
+	req, err := bzweb3.NewRequest("vm_estimate_gas", from, to, strconv.FormatInt(height, 10), data)
 	if err != nil {
 		return nil, err
 	}
