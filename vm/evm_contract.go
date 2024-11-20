@@ -145,12 +145,9 @@ func (ec *EVMContract) ExecSync(name string, args []interface{}, from *web3.Wall
 		return nil, err
 	}
 
-	//
-	// it will be deprecated.
-	// the deployed contract address will be not returned via `ret.Data`.
-	//if ret.Code == xerrors.ErrCodeSuccess && len(ret.Data) == types.AddrSize {
-	//	ec.addr = types.Address(ret.Data)
-	//}
+	if ret.Code == xerrors.ErrCodeSuccess && len(ret.Data) == types.AddrSize {
+		ec.addr = types.Address(ret.Data)
+	}
 
 	return ret, nil
 }
@@ -179,10 +176,7 @@ func (ec *EVMContract) ExecCommit(name string, args []interface{}, from *web3.Wa
 		return nil, err
 	}
 	if ret.CheckTx.Code == xerrors.ErrCodeSuccess && ret.DeliverTx.Code == xerrors.ErrCodeSuccess && name == "" {
-		ec.addr, err = types.HexToAddress(string(ret.DeliverTx.Events[0].Attributes[0].Value))
-		if err != nil {
-			return nil, err
-		}
+		ec.addr = types.Address(ret.DeliverTx.Data)
 	}
 
 	return ret, nil
