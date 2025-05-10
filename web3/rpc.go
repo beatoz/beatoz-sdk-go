@@ -84,7 +84,7 @@ func (bzweb3 *BeatozWeb3) GetAccount(addr types.Address) (*ctrlertypes.Account, 
 	_acct := &struct {
 		Address types.Address  `json:"address"`
 		Name    string         `json:"name,omitempty"`
-		Nonce   uint64         `json:"nonce,string"`
+		Nonce   int64          `json:"nonce,string"`
 		Balance string         `json:"balance"`
 		Code    bytes.HexBytes `json:"code,omitempty"`
 		DocURL  string         `json:"docURL,omitempty"`

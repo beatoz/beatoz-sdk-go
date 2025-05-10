@@ -95,7 +95,7 @@ func (w *Wallet) addNonce() {
 	w.acct.AddNonce()
 }
 
-func (w *Wallet) GetNonce() uint64 {
+func (w *Wallet) GetNonce() int64 {
 	w.mtx.RLock()
 	defer w.mtx.RUnlock()
 
@@ -194,7 +194,7 @@ func (w *Wallet) SendTxCommit(tx *ctrlertypes.Trx, bzweb3 *BeatozWeb3) (*coretyp
 	}
 }
 
-func (w *Wallet) SetDocSync(name, url string, gas uint64, gasPrice *uint256.Int, bzweb3 *BeatozWeb3) (*coretypes.ResultBroadcastTx, error) {
+func (w *Wallet) SetDocSync(name, url string, gas int64, gasPrice *uint256.Int, bzweb3 *BeatozWeb3) (*coretypes.ResultBroadcastTx, error) {
 	tx := NewTrxSetDoc(w.Address(), w.acct.GetNonce(), gas, gasPrice, name, url)
 	if _, _, err := w.SignTrxRLP(tx, bzweb3.ChainID()); err != nil {
 		return nil, err
@@ -203,7 +203,7 @@ func (w *Wallet) SetDocSync(name, url string, gas uint64, gasPrice *uint256.Int,
 	}
 }
 
-func (w *Wallet) SetDocCommit(name, url string, gas uint64, gasPrice *uint256.Int, bzweb3 *BeatozWeb3) (*coretypes.ResultBroadcastTxCommit, error) {
+func (w *Wallet) SetDocCommit(name, url string, gas int64, gasPrice *uint256.Int, bzweb3 *BeatozWeb3) (*coretypes.ResultBroadcastTxCommit, error) {
 	tx := NewTrxSetDoc(w.Address(), w.acct.GetNonce(), gas, gasPrice, name, url)
 	if _, _, err := w.SignTrxRLP(tx, bzweb3.ChainID()); err != nil {
 		return nil, err
@@ -212,7 +212,7 @@ func (w *Wallet) SetDocCommit(name, url string, gas uint64, gasPrice *uint256.In
 	}
 }
 
-func (w *Wallet) TransferAsync(to types.Address, gas uint64, gasPrice, amt *uint256.Int, bzweb3 *BeatozWeb3) (*coretypes.ResultBroadcastTx, error) {
+func (w *Wallet) TransferAsync(to types.Address, gas int64, gasPrice, amt *uint256.Int, bzweb3 *BeatozWeb3) (*coretypes.ResultBroadcastTx, error) {
 	tx := NewTrxTransfer(
 		w.Address(), to,
 		w.acct.GetNonce(),
@@ -221,7 +221,7 @@ func (w *Wallet) TransferAsync(to types.Address, gas uint64, gasPrice, amt *uint
 	return w.SendTxAsync(tx, bzweb3)
 }
 
-func (w *Wallet) TransferSync(to types.Address, gas uint64, gasPrice, amt *uint256.Int, bzweb3 *BeatozWeb3) (*coretypes.ResultBroadcastTx, error) {
+func (w *Wallet) TransferSync(to types.Address, gas int64, gasPrice, amt *uint256.Int, bzweb3 *BeatozWeb3) (*coretypes.ResultBroadcastTx, error) {
 	tx := NewTrxTransfer(
 		w.Address(), to,
 		w.acct.GetNonce(),
@@ -230,7 +230,7 @@ func (w *Wallet) TransferSync(to types.Address, gas uint64, gasPrice, amt *uint2
 	return w.SendTxSync(tx, bzweb3)
 }
 
-func (w *Wallet) TransferCommit(to types.Address, gas uint64, gasPrice, amt *uint256.Int, bzweb3 *BeatozWeb3) (*coretypes.ResultBroadcastTxCommit, error) {
+func (w *Wallet) TransferCommit(to types.Address, gas int64, gasPrice, amt *uint256.Int, bzweb3 *BeatozWeb3) (*coretypes.ResultBroadcastTxCommit, error) {
 	tx := NewTrxTransfer(
 		w.Address(), to,
 		w.acct.GetNonce(),
@@ -239,7 +239,7 @@ func (w *Wallet) TransferCommit(to types.Address, gas uint64, gasPrice, amt *uin
 	return w.SendTxCommit(tx, bzweb3)
 }
 
-func (w *Wallet) StakingAsync(to types.Address, gas uint64, gasPrice, amt *uint256.Int, bzweb3 *BeatozWeb3) (*coretypes.ResultBroadcastTx, error) {
+func (w *Wallet) StakingAsync(to types.Address, gas int64, gasPrice, amt *uint256.Int, bzweb3 *BeatozWeb3) (*coretypes.ResultBroadcastTx, error) {
 	tx := NewTrxStaking(
 		w.Address(), to,
 		w.acct.GetNonce(),
@@ -248,7 +248,7 @@ func (w *Wallet) StakingAsync(to types.Address, gas uint64, gasPrice, amt *uint2
 	return w.SendTxAsync(tx, bzweb3)
 }
 
-func (w *Wallet) StakingSync(to types.Address, gas uint64, gasPrice, amt *uint256.Int, bzweb3 *BeatozWeb3) (*coretypes.ResultBroadcastTx, error) {
+func (w *Wallet) StakingSync(to types.Address, gas int64, gasPrice, amt *uint256.Int, bzweb3 *BeatozWeb3) (*coretypes.ResultBroadcastTx, error) {
 	tx := NewTrxStaking(
 		w.Address(), to,
 		w.acct.GetNonce(),
@@ -257,7 +257,7 @@ func (w *Wallet) StakingSync(to types.Address, gas uint64, gasPrice, amt *uint25
 	return w.SendTxSync(tx, bzweb3)
 }
 
-func (w *Wallet) StakingCommit(to types.Address, gas uint64, gasPrice, amt *uint256.Int, bzweb3 *BeatozWeb3) (*coretypes.ResultBroadcastTxCommit, error) {
+func (w *Wallet) StakingCommit(to types.Address, gas int64, gasPrice, amt *uint256.Int, bzweb3 *BeatozWeb3) (*coretypes.ResultBroadcastTxCommit, error) {
 	tx := NewTrxStaking(
 		w.Address(), to,
 		w.acct.GetNonce(),
@@ -266,22 +266,22 @@ func (w *Wallet) StakingCommit(to types.Address, gas uint64, gasPrice, amt *uint
 	return w.SendTxCommit(tx, bzweb3)
 }
 
-func (w *Wallet) WithdrawAync(gas uint64, gasPrice, req *uint256.Int, bzweb3 *BeatozWeb3) (*coretypes.ResultBroadcastTx, error) {
+func (w *Wallet) WithdrawAync(gas int64, gasPrice, req *uint256.Int, bzweb3 *BeatozWeb3) (*coretypes.ResultBroadcastTx, error) {
 	tx := NewTrxWithdraw(w.Address(), w.Address(), w.acct.GetNonce(), gas, gasPrice, req)
 	return w.SendTxAsync(tx, bzweb3)
 }
 
-func (w *Wallet) WithdrawSync(gas uint64, gasPrice, req *uint256.Int, bzweb3 *BeatozWeb3) (*coretypes.ResultBroadcastTx, error) {
+func (w *Wallet) WithdrawSync(gas int64, gasPrice, req *uint256.Int, bzweb3 *BeatozWeb3) (*coretypes.ResultBroadcastTx, error) {
 	tx := NewTrxWithdraw(w.Address(), w.Address(), w.acct.GetNonce(), gas, gasPrice, req)
 	return w.SendTxSync(tx, bzweb3)
 }
 
-func (w *Wallet) WithdrawCommit(gas uint64, gasPrice, req *uint256.Int, bzweb3 *BeatozWeb3) (*coretypes.ResultBroadcastTxCommit, error) {
+func (w *Wallet) WithdrawCommit(gas int64, gasPrice, req *uint256.Int, bzweb3 *BeatozWeb3) (*coretypes.ResultBroadcastTxCommit, error) {
 	tx := NewTrxWithdraw(w.Address(), w.Address(), w.acct.GetNonce(), gas, gasPrice, req)
 	return w.SendTxCommit(tx, bzweb3)
 }
 
-func (w *Wallet) ProposalSync(gas uint64, gasPrice *uint256.Int, msg string, start, period, applyingHeight int64, optType int32, options []byte, bzweb3 *BeatozWeb3) (*coretypes.ResultBroadcastTx, error) {
+func (w *Wallet) ProposalSync(gas int64, gasPrice *uint256.Int, msg string, start, period, applyingHeight int64, optType int32, options []byte, bzweb3 *BeatozWeb3) (*coretypes.ResultBroadcastTx, error) {
 	tx := NewTrxProposal(
 		w.Address(),
 		types.ZeroAddress(),
@@ -295,7 +295,7 @@ func (w *Wallet) ProposalSync(gas uint64, gasPrice *uint256.Int, msg string, sta
 	}
 }
 
-func (w *Wallet) ProposalCommit(gas uint64, gasPrice *uint256.Int, msg string, start, period, applyingHeight int64, optType int32, options []byte, bzweb3 *BeatozWeb3) (*coretypes.ResultBroadcastTxCommit, error) {
+func (w *Wallet) ProposalCommit(gas int64, gasPrice *uint256.Int, msg string, start, period, applyingHeight int64, optType int32, options []byte, bzweb3 *BeatozWeb3) (*coretypes.ResultBroadcastTxCommit, error) {
 	tx := NewTrxProposal(
 		w.Address(),
 		types.ZeroAddress(),
@@ -309,7 +309,7 @@ func (w *Wallet) ProposalCommit(gas uint64, gasPrice *uint256.Int, msg string, s
 	}
 }
 
-func (w *Wallet) VotingSync(gas uint64, gasPrice *uint256.Int, txHash bytes.HexBytes, choice int32, bzweb3 *BeatozWeb3) (*coretypes.ResultBroadcastTx, error) {
+func (w *Wallet) VotingSync(gas int64, gasPrice *uint256.Int, txHash bytes.HexBytes, choice int32, bzweb3 *BeatozWeb3) (*coretypes.ResultBroadcastTx, error) {
 	tx := NewTrxVoting(
 		w.Address(),
 		types.ZeroAddress(),
@@ -323,7 +323,7 @@ func (w *Wallet) VotingSync(gas uint64, gasPrice *uint256.Int, txHash bytes.HexB
 	}
 }
 
-func (w *Wallet) VotingCommit(gas uint64, gasPrice *uint256.Int, txHash bytes.HexBytes, choice int32, bzweb3 *BeatozWeb3) (*coretypes.ResultBroadcastTxCommit, error) {
+func (w *Wallet) VotingCommit(gas int64, gasPrice *uint256.Int, txHash bytes.HexBytes, choice int32, bzweb3 *BeatozWeb3) (*coretypes.ResultBroadcastTxCommit, error) {
 	tx := NewTrxVoting(
 		w.Address(),
 		types.ZeroAddress(),
