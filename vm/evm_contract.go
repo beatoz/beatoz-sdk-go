@@ -79,7 +79,7 @@ func (ec *EVMContract) Call(name string, args []interface{}, from types.Address,
 	return ec.unpack(name, ret0.ReturnData)
 }
 
-func (ec *EVMContract) EstimateGas(name string, args []interface{}, from types.Address, height int64, bzweb3 *web3.BeatozWeb3) (uint64, error) {
+func (ec *EVMContract) EstimateGas(name string, args []interface{}, from types.Address, height int64, bzweb3 *web3.BeatozWeb3) (int64, error) {
 	if ec.addr == nil {
 		return 0, errors.New("no contract address")
 	}
@@ -94,7 +94,7 @@ func (ec *EVMContract) EstimateGas(name string, args []interface{}, from types.A
 	return ret0.UsedGas, nil
 }
 
-func (ec *EVMContract) ExecAsync(name string, args []interface{}, from *web3.Wallet, nonce, gas uint64, gasPrice, amt *uint256.Int, bzweb3 *web3.BeatozWeb3) (rbytes.HexBytes, error) {
+func (ec *EVMContract) ExecAsync(name string, args []interface{}, from *web3.Wallet, nonce, gas int64, gasPrice, amt *uint256.Int, bzweb3 *web3.BeatozWeb3) (rbytes.HexBytes, error) {
 	to := ec.addr
 
 	data, err := ec.pack(name, args...)
@@ -121,7 +121,7 @@ func (ec *EVMContract) ExecAsync(name string, args []interface{}, from *web3.Wal
 	return rbytes.HexBytes(ret.Hash), nil
 }
 
-func (ec *EVMContract) ExecSync(name string, args []interface{}, from *web3.Wallet, nonce, gas uint64, gasPrice, amt *uint256.Int, bzweb3 *web3.BeatozWeb3) (*coretypes.ResultBroadcastTx, error) {
+func (ec *EVMContract) ExecSync(name string, args []interface{}, from *web3.Wallet, nonce, gas int64, gasPrice, amt *uint256.Int, bzweb3 *web3.BeatozWeb3) (*coretypes.ResultBroadcastTx, error) {
 	to := ec.addr
 
 	data, err := ec.pack(name, args...)
@@ -152,7 +152,7 @@ func (ec *EVMContract) ExecSync(name string, args []interface{}, from *web3.Wall
 	return ret, nil
 }
 
-func (ec *EVMContract) ExecCommit(name string, args []interface{}, from *web3.Wallet, nonce, gas uint64, gasPrice, amt *uint256.Int, bzweb3 *web3.BeatozWeb3) (*coretypes.ResultBroadcastTxCommit, error) {
+func (ec *EVMContract) ExecCommit(name string, args []interface{}, from *web3.Wallet, nonce, gas int64, gasPrice, amt *uint256.Int, bzweb3 *web3.BeatozWeb3) (*coretypes.ResultBroadcastTxCommit, error) {
 	to := ec.addr
 
 	data, err := ec.pack(name, args...)
@@ -182,7 +182,7 @@ func (ec *EVMContract) ExecCommit(name string, args []interface{}, from *web3.Wa
 	return ret, nil
 }
 
-func (ec *EVMContract) ExecCommitWith(data []byte, from *web3.Wallet, nonce, gas uint64, gasPrice, amt *uint256.Int, bzweb3 *web3.BeatozWeb3) (*coretypes.ResultBroadcastTxCommit, error) {
+func (ec *EVMContract) ExecCommitWith(data []byte, from *web3.Wallet, nonce, gas int64, gasPrice, amt *uint256.Int, bzweb3 *web3.BeatozWeb3) (*coretypes.ResultBroadcastTxCommit, error) {
 	to := ec.addr
 
 	tx := web3.NewTrxContract(from.Address(), to, nonce, gas, gasPrice, amt, data)
