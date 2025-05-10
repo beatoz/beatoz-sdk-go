@@ -7,9 +7,9 @@ import (
 	"github.com/holiman/uint256"
 )
 
-func NewTrxTransfer(from, to types.Address, nonce, gas uint64, gasPrice, amt *uint256.Int) *types2.Trx {
+func NewTrxTransfer(from, to types.Address, nonce, gas int64, gasPrice, amt *uint256.Int) *types2.Trx {
 	return types2.NewTrx(
-		uint32(1),
+		1,
 		from, to,
 		nonce,
 		gas,
@@ -18,9 +18,9 @@ func NewTrxTransfer(from, to types.Address, nonce, gas uint64, gasPrice, amt *ui
 		&types2.TrxPayloadAssetTransfer{})
 }
 
-func NewTrxStaking(from, to types.Address, nonce, gas uint64, gasPrice, amt *uint256.Int) *types2.Trx {
+func NewTrxStaking(from, to types.Address, nonce, gas int64, gasPrice, amt *uint256.Int) *types2.Trx {
 	return types2.NewTrx(
-		uint32(1),
+		1,
 		from, to,
 		nonce,
 		gas,
@@ -29,9 +29,9 @@ func NewTrxStaking(from, to types.Address, nonce, gas uint64, gasPrice, amt *uin
 		&types2.TrxPayloadStaking{})
 }
 
-func NewTrxUnstaking(from, to types.Address, nonce, gas uint64, gasPrice *uint256.Int, txhash bytes.HexBytes) *types2.Trx {
+func NewTrxUnstaking(from, to types.Address, nonce, gas int64, gasPrice *uint256.Int, txhash bytes.HexBytes) *types2.Trx {
 	return types2.NewTrx(
-		uint32(1),
+		1,
 		from, to,
 		nonce,
 		gas,
@@ -40,9 +40,9 @@ func NewTrxUnstaking(from, to types.Address, nonce, gas uint64, gasPrice *uint25
 		&types2.TrxPayloadUnstaking{TxHash: txhash})
 }
 
-func NewTrxWithdraw(from, to types.Address, nonce, gas uint64, gasPrice, req *uint256.Int) *types2.Trx {
+func NewTrxWithdraw(from, to types.Address, nonce, gas int64, gasPrice, req *uint256.Int) *types2.Trx {
 	return types2.NewTrx(
-		uint32(1),
+		1,
 		from, to,
 		nonce,
 		gas,
@@ -51,9 +51,9 @@ func NewTrxWithdraw(from, to types.Address, nonce, gas uint64, gasPrice, req *ui
 		&types2.TrxPayloadWithdraw{ReqAmt: req})
 }
 
-func NewTrxProposal(from, to types.Address, nonce, gas uint64, gasPrice *uint256.Int, msg string, start, period, applyingHeight int64, optType int32, options ...[]byte) *types2.Trx {
+func NewTrxProposal(from, to types.Address, nonce, gas int64, gasPrice *uint256.Int, msg string, start, period, applyingHeight int64, optType int32, options ...[]byte) *types2.Trx {
 	return types2.NewTrx(
-		uint32(1),
+		1,
 		from, to,
 		nonce,
 		gas,
@@ -69,9 +69,9 @@ func NewTrxProposal(from, to types.Address, nonce, gas uint64, gasPrice *uint256
 		})
 }
 
-func NewTrxVoting(from, to types.Address, nonce, gas uint64, gasPrice *uint256.Int, txHash bytes.HexBytes, choice int32) *types2.Trx {
+func NewTrxVoting(from, to types.Address, nonce, gas int64, gasPrice *uint256.Int, txHash bytes.HexBytes, choice int32) *types2.Trx {
 	return types2.NewTrx(
-		uint32(1),
+		1,
 		from, to,
 		nonce,
 		gas,
@@ -83,9 +83,9 @@ func NewTrxVoting(from, to types.Address, nonce, gas uint64, gasPrice *uint256.I
 		})
 }
 
-func NewTrxContract(from, to types.Address, nonce, gas uint64, gasPrice, amt *uint256.Int, data bytes.HexBytes) *types2.Trx {
+func NewTrxContract(from, to types.Address, nonce, gas int64, gasPrice, amt *uint256.Int, data bytes.HexBytes) *types2.Trx {
 	return types2.NewTrx(
-		uint32(1),
+		1,
 		from, to,
 		nonce,
 		gas,
@@ -96,9 +96,9 @@ func NewTrxContract(from, to types.Address, nonce, gas uint64, gasPrice, amt *ui
 		})
 }
 
-func NewTrxSetDoc(from types.Address, nonce, gas uint64, gasPrice *uint256.Int, name, docUrl string) *types2.Trx {
+func NewTrxSetDoc(from types.Address, nonce, gas int64, gasPrice *uint256.Int, name, docUrl string) *types2.Trx {
 	return types2.NewTrx(
-		uint32(1),
+		1,
 		from, types.ZeroAddress(),
 		nonce,
 		gas,
