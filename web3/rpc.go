@@ -3,7 +3,6 @@ package web3
 import (
 	"errors"
 	"github.com/beatoz/beatoz-go/ctrlers/gov/proposal"
-	"github.com/beatoz/beatoz-go/ctrlers/supply"
 	ctrlertypes "github.com/beatoz/beatoz-go/ctrlers/types"
 	"github.com/beatoz/beatoz-go/rpc"
 	btztypes "github.com/beatoz/beatoz-go/types"
@@ -159,9 +158,9 @@ func (bzweb3 *BeatozWeb3) QueryStakes(addr btztypes.Address) ([]*types.RespQuery
 	}
 }
 
-func (bzweb3 *BeatozWeb3) QueryReward(addr btztypes.Address, height int64) (*supply.Reward, error) {
+func (bzweb3 *BeatozWeb3) QueryReward(addr btztypes.Address, height int64) (*types.RespQueryReward, error) {
 	queryResp := &rpc.QueryResult{}
-	rwd := supply.NewReward(addr)
+	rwd := &types.RespQueryReward{}
 	if req, err := bzweb3.NewRequest("reward", addr.String(), strconv.FormatInt(height, 10)); err != nil {
 		panic(err)
 	} else if resp, err := bzweb3.provider.Call(req); err != nil {

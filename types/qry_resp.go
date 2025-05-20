@@ -3,6 +3,7 @@ package types
 import (
 	btztypes "github.com/beatoz/beatoz-go/types"
 	btzbytes "github.com/beatoz/beatoz-go/types/bytes"
+	"github.com/tendermint/tendermint/types"
 )
 
 type RespQueryStake struct {
@@ -26,4 +27,13 @@ type RespQueryDelegatee struct {
 	Stakes []*RespQueryStake `json:"stakes,omitempty"`
 	// DEPRECATED: only for backward compatibility
 	NotSignedHeights interface{} `json:"notSignedBlocks,omitempty"`
+}
+
+type RespQueryReward struct {
+	Address   types.Address `json:"address,omitempty"`
+	Issued    string        `json:"issued,omitempty"`
+	Withdrawn string        `json:"withdrawn,omitempty"`
+	Slashed   string        `json:"slashed,omitempty"`
+	Cumulated string        `json:"cumulated,omitempty"`
+	Height    int64         `json:"height,omitempty"`
 }
