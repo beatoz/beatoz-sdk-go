@@ -3,7 +3,6 @@ package web3
 import (
 	"errors"
 	"github.com/beatoz/beatoz-go/ctrlers/gov/proposal"
-	"github.com/beatoz/beatoz-go/ctrlers/stake"
 	"github.com/beatoz/beatoz-go/ctrlers/supply"
 	ctrlertypes "github.com/beatoz/beatoz-go/ctrlers/types"
 	"github.com/beatoz/beatoz-go/rpc"
@@ -49,7 +48,12 @@ func (bzweb3 *BeatozWeb3) Genesis() (*coretypes.ResultGenesis, error) {
 	return retGen, nil
 }
 
+// DEPRECATED: Use QueryGovParams instead
 func (bzweb3 *BeatozWeb3) GetGovParams() (*ctrlertypes.GovParams, error) {
+	return bzweb3.QueryGovParams()
+}
+
+func (bzweb3 *BeatozWeb3) QueryGovParams() (*ctrlertypes.GovParams, error) {
 	queryResp := &rpc.QueryResult{}
 
 	if req, err := bzweb3.NewRequest("gov_params", strconv.FormatInt(0, 10)); err != nil {
@@ -69,7 +73,13 @@ func (bzweb3 *BeatozWeb3) GetGovParams() (*ctrlertypes.GovParams, error) {
 	return govParams, nil
 
 }
+
+// DEPRECATED: Use QueryAccount instead
 func (bzweb3 *BeatozWeb3) GetAccount(addr btztypes.Address) (*ctrlertypes.Account, error) {
+	return bzweb3.QueryAccount(addr)
+}
+
+func (bzweb3 *BeatozWeb3) QueryAccount(addr btztypes.Address) (*ctrlertypes.Account, error) {
 	queryResp := &rpc.QueryResult{}
 
 	if req, err := bzweb3.NewRequest("account", addr.String(), strconv.FormatInt(0, 10)); err != nil {
@@ -112,9 +122,9 @@ func (bzweb3 *BeatozWeb3) GetAccount(addr btztypes.Address) (*ctrlertypes.Accoun
 	}
 }
 
-func (bzweb3 *BeatozWeb3) GetDelegatee(addr btztypes.Address) (*stake.Delegatee, error) {
+func (bzweb3 *BeatozWeb3) QueryDelegatee(addr btztypes.Address) (*types.RespQueryDelegatee, error) {
 	queryResp := &rpc.QueryResult{}
-	delegatee := stake.NewDelegatee(nil, nil)
+	dgtee := &types.RespQueryDelegatee{}
 
 	if req, err := bzweb3.NewRequest("delegatee", addr.String(), strconv.FormatInt(0, 10)); err != nil {
 		panic(err)
@@ -124,10 +134,10 @@ func (bzweb3 *BeatozWeb3) GetDelegatee(addr btztypes.Address) (*stake.Delegatee,
 		return nil, errors.New("provider error: " + string(resp.Error))
 	} else if err := tmjson.Unmarshal(resp.Result, queryResp); err != nil {
 		return nil, err
-	} else if err := tmjson.Unmarshal(queryResp.Value, delegatee); err != nil {
+	} else if err := tmjson.Unmarshal(queryResp.Value, dgtee); err != nil {
 		return nil, err
 	} else {
-		return delegatee, nil
+		return dgtee, nil
 	}
 }
 
@@ -279,7 +289,11 @@ func (bzweb3 *BeatozWeb3) sendTransaction(tx *ctrlertypes.Trx, method string) (*
 	}
 }
 
+// DEPRECATED: Use QueryTransaction instead
 func (bzweb3 *BeatozWeb3) GetTransaction(txhash []byte) (*types.TrxResult, error) {
+	return bzweb3.QueryTransaction(txhash)
+}
+func (bzweb3 *BeatozWeb3) QueryTransaction(txhash []byte) (*types.TrxResult, error) {
 	txRet := &types.TrxResult{
 		ResultTx: &coretypes.ResultTx{},
 		TrxObj:   &ctrlertypes.Trx{},
@@ -300,7 +314,13 @@ func (bzweb3 *BeatozWeb3) GetTransaction(txhash []byte) (*types.TrxResult, error
 	}
 }
 
+// DEPRECATED: Use QueryValidators instead
 func (bzweb3 *BeatozWeb3) GetValidators(height int64, page, perPage int) (*coretypes.ResultValidators, error) {
+	return bzweb3.QueryValidators(height, page, perPage)
+}
+
+func (bzweb3 *BeatozWeb3) QueryValidators(height int64, page, perPage int) (*coretypes.ResultValidators, error) {
+
 	retVals := &coretypes.ResultValidators{}
 
 	_height := "0"
