@@ -4,11 +4,12 @@ import (
 	"errors"
 	"github.com/beatoz/beatoz-go/ctrlers/gov/proposal"
 	"github.com/beatoz/beatoz-go/ctrlers/stake"
+	"github.com/beatoz/beatoz-go/ctrlers/supply"
 	ctrlertypes "github.com/beatoz/beatoz-go/ctrlers/types"
 	"github.com/beatoz/beatoz-go/rpc"
-	"github.com/beatoz/beatoz-go/types"
-	"github.com/beatoz/beatoz-go/types/bytes"
-	bzweb3types "github.com/beatoz/beatoz-sdk-go/types"
+	btztypes "github.com/beatoz/beatoz-go/types"
+	btzbytes "github.com/beatoz/beatoz-go/types/bytes"
+	"github.com/beatoz/beatoz-sdk-go/types"
 	"github.com/holiman/uint256"
 	tmjson "github.com/tendermint/tendermint/libs/json"
 	coretypes "github.com/tendermint/tendermint/rpc/core/types"
@@ -68,7 +69,7 @@ func (bzweb3 *BeatozWeb3) GetGovParams() (*ctrlertypes.GovParams, error) {
 	return govParams, nil
 
 }
-func (bzweb3 *BeatozWeb3) GetAccount(addr types.Address) (*ctrlertypes.Account, error) {
+func (bzweb3 *BeatozWeb3) GetAccount(addr btztypes.Address) (*ctrlertypes.Account, error) {
 	queryResp := &rpc.QueryResult{}
 
 	if req, err := bzweb3.NewRequest("account", addr.String(), strconv.FormatInt(0, 10)); err != nil {
@@ -82,12 +83,12 @@ func (bzweb3 *BeatozWeb3) GetAccount(addr types.Address) (*ctrlertypes.Account, 
 	}
 
 	_acct := &struct {
-		Address types.Address  `json:"address"`
-		Name    string         `json:"name,omitempty"`
-		Nonce   int64          `json:"nonce,string"`
-		Balance string         `json:"balance"`
-		Code    bytes.HexBytes `json:"code,omitempty"`
-		DocURL  string         `json:"docURL,omitempty"`
+		Address btztypes.Address  `json:"address"`
+		Name    string            `json:"name,omitempty"`
+		Nonce   int64             `json:"nonce,string"`
+		Balance string            `json:"balance"`
+		Code    btzbytes.HexBytes `json:"code,omitempty"`
+		DocURL  string            `json:"docURL,omitempty"`
 	}{}
 
 	if err := tmjson.Unmarshal(queryResp.Value, _acct); err != nil {
@@ -111,7 +112,7 @@ func (bzweb3 *BeatozWeb3) GetAccount(addr types.Address) (*ctrlertypes.Account, 
 	}
 }
 
-func (bzweb3 *BeatozWeb3) GetDelegatee(addr types.Address) (*stake.Delegatee, error) {
+func (bzweb3 *BeatozWeb3) GetDelegatee(addr btztypes.Address) (*stake.Delegatee, error) {
 	queryResp := &rpc.QueryResult{}
 	delegatee := stake.NewDelegatee(nil, nil)
 
@@ -130,9 +131,9 @@ func (bzweb3 *BeatozWeb3) GetDelegatee(addr types.Address) (*stake.Delegatee, er
 	}
 }
 
-func (bzweb3 *BeatozWeb3) GetStakes(addr types.Address) ([]*stake.Stake, error) {
+func (bzweb3 *BeatozWeb3) QueryStakes(addr btztypes.Address) ([]*types.RespQueryStake, error) {
 	queryResp := &rpc.QueryResult{}
-	var stakes []*stake.Stake
+	var stakes []*types.RespQueryStake
 	if req, err := bzweb3.NewRequest("stakes", addr.String(), strconv.FormatInt(0, 10)); err != nil {
 		panic(err)
 	} else if resp, err := bzweb3.provider.Call(req); err != nil {
@@ -148,9 +149,9 @@ func (bzweb3 *BeatozWeb3) GetStakes(addr types.Address) ([]*stake.Stake, error) 
 	}
 }
 
-func (bzweb3 *BeatozWeb3) QueryReward(addr types.Address, height int64) (*stake.Reward, error) {
+func (bzweb3 *BeatozWeb3) QueryReward(addr btztypes.Address, height int64) (*supply.Reward, error) {
 	queryResp := &rpc.QueryResult{}
-	rwd := stake.NewReward(addr)
+	rwd := supply.NewReward(addr)
 	if req, err := bzweb3.NewRequest("reward", addr.String(), strconv.FormatInt(height, 10)); err != nil {
 		panic(err)
 	} else if resp, err := bzweb3.provider.Call(req); err != nil {
@@ -263,7 +264,7 @@ func (bzweb3 *BeatozWeb3) SendTransactionCommit(tx *ctrlertypes.Trx) (*coretypes
 	return ret, nil
 }
 
-func (bzweb3 *BeatozWeb3) sendTransaction(tx *ctrlertypes.Trx, method string) (*bzweb3types.JSONRpcResp, error) {
+func (bzweb3 *BeatozWeb3) sendTransaction(tx *ctrlertypes.Trx, method string) (*types.JSONRpcResp, error) {
 
 	if txbz, err := tx.Encode(); err != nil {
 		return nil, err
@@ -278,8 +279,8 @@ func (bzweb3 *BeatozWeb3) sendTransaction(tx *ctrlertypes.Trx, method string) (*
 	}
 }
 
-func (bzweb3 *BeatozWeb3) GetTransaction(txhash []byte) (*bzweb3types.TrxResult, error) {
-	txRet := &bzweb3types.TrxResult{
+func (bzweb3 *BeatozWeb3) GetTransaction(txhash []byte) (*types.TrxResult, error) {
+	txRet := &types.TrxResult{
 		ResultTx: &coretypes.ResultTx{},
 		TrxObj:   &ctrlertypes.Trx{},
 	}
@@ -325,7 +326,7 @@ func (bzweb3 *BeatozWeb3) GetValidators(height int64, page, perPage int) (*coret
 	return retVals, nil
 }
 
-func (bzweb3 *BeatozWeb3) VmCall(from, to types.Address, height int64, data []byte) (*ctrlertypes.VMCallResult, error) {
+func (bzweb3 *BeatozWeb3) VmCall(from, to btztypes.Address, height int64, data []byte) (*ctrlertypes.VMCallResult, error) {
 	req, err := bzweb3.NewRequest("vm_call", from, to, strconv.FormatInt(height, 10), data)
 	if err != nil {
 		return nil, err
@@ -353,7 +354,7 @@ func (bzweb3 *BeatozWeb3) VmCall(from, to types.Address, height int64, data []by
 	return vmRet, nil
 }
 
-func (bzweb3 *BeatozWeb3) VmEstimateGas(from, to types.Address, height int64, data []byte) (*ctrlertypes.VMCallResult, error) {
+func (bzweb3 *BeatozWeb3) VmEstimateGas(from, to btztypes.Address, height int64, data []byte) (*ctrlertypes.VMCallResult, error) {
 	req, err := bzweb3.NewRequest("vm_estimate_gas", from, to, strconv.FormatInt(height, 10), data)
 	if err != nil {
 		return nil, err
