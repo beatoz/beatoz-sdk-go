@@ -186,7 +186,7 @@ func (bzweb3 *BeatozWeb3) QueryTotalPower(height int64) (int64, error) {
 		return -1, errors.New("provider error: " + string(resp.Error))
 	} else if err := tmjson.Unmarshal(resp.Result, queryResp); err != nil {
 		return -1, err
-	} else if ret, err := strconv.ParseInt(string(queryResp.Value), 10, 64); err != nil {
+	} else if ret, err := strconv.ParseInt(strings.Trim(string(queryResp.Value), `"`), 10, 64); err != nil {
 		return -1, err
 	} else {
 		return ret, nil
@@ -206,7 +206,7 @@ func (bzweb3 *BeatozWeb3) QueryVotingPower(height int64) (int64, error) {
 		return -1, errors.New("provider error: " + string(resp.Error))
 	} else if err := tmjson.Unmarshal(resp.Result, queryResp); err != nil {
 		return -1, err
-	} else if ret, err := strconv.ParseInt(string(queryResp.Value), 10, 64); err != nil {
+	} else if ret, err := strconv.ParseInt(strings.Trim(string(queryResp.Value), `"`), 10, 64); err != nil {
 		return -1, err
 	} else {
 		return ret, nil
