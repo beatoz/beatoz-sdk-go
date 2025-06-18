@@ -134,29 +134,11 @@ func (w *Wallet) Unlock(s []byte) error {
 	return w.wkey.Unlock(s)
 }
 
-func (w *Wallet) SignTrxProto(tx *ctrlertypes.Trx, chainId string) (bytes.HexBytes, bytes.HexBytes, error) {
-	w.mtx.RLock()
-	defer w.mtx.RUnlock()
-
-	preimg, xerr := ctrlertypes.PreImageToSignTrxProto(tx, chainId)
-	if xerr != nil {
-		return nil, nil, xerr
-	}
-
-	sig, err := w.wkey.Sign(preimg)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	tx.Sig = sig
-	return sig, preimg, nil
-}
-
 func (w *Wallet) SignTrxRLP(tx *ctrlertypes.Trx, chainId string) (bytes.HexBytes, bytes.HexBytes, error) {
 	w.mtx.RLock()
 	defer w.mtx.RUnlock()
 
-	preimg, xerr := ctrlertypes.PreImageToSignTrxRLP(tx, chainId)
+	preimg, xerr := ctrlertypes.GetPreimageSenderTrxRLP(tx, chainId)
 	if xerr != nil {
 		return nil, nil, xerr
 	}
