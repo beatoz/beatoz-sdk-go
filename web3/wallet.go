@@ -1,6 +1,7 @@
 package web3
 
 import (
+	"errors"
 	ctrlertypes "github.com/beatoz/beatoz-go/ctrlers/types"
 	"github.com/beatoz/beatoz-go/types"
 	"github.com/beatoz/beatoz-go/types/bytes"
@@ -149,6 +150,33 @@ func (w *Wallet) SignTrxRLP(tx *ctrlertypes.Trx, chainId string) (bytes.HexBytes
 	}
 
 	tx.Sig = sig
+	// reset payer info.
+	// payer must sign this tx again.
+	tx.Payer = nil
+	tx.PayerSig = nil
+	return sig, preimg, nil
+}
+
+func (w *Wallet) SignPayerTrxRLP(tx *ctrlertypes.Trx, chainId string) (bytes.HexBytes, bytes.HexBytes, error) {
+	w.mtx.RLock()
+	defer w.mtx.RUnlock()
+
+	if tx.Sig == nil {
+		return nil, nil, errors.New("tx has no sender's signature")
+	}
+
+	preimg, xerr := ctrlertypes.GetPreimagePayerTrxRLP(tx, chainId)
+	if xerr != nil {
+		return nil, nil, xerr
+	}
+
+	sig, err := w.wkey.Sign(preimg)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	tx.Payer = w.wkey.Address
+	tx.PayerSig = sig
 	return sig, preimg, nil
 }
 
