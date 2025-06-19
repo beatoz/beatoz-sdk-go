@@ -5,7 +5,7 @@ go 1.23.0
 toolchain go1.24.4
 
 require (
-	github.com/beatoz/beatoz-go v1.4.1-0.20250618152123-722aeaf88cef
+	github.com/beatoz/beatoz-go v1.4.1-0.20250619022155-40072d51a761
 	github.com/ethereum/go-ethereum v1.10.23
 	github.com/gorilla/websocket v1.5.0
 	github.com/holiman/uint256 v1.3.1

@@ -199,6 +199,10 @@ func (ec *EVMContract) ExecCommitWith(data []byte, from *web3.Wallet, nonce, gas
 	return ret, nil
 }
 
+func (ec *EVMContract) Pack(name string, args ...interface{}) ([]byte, error) {
+	return ec.pack(name, args...)
+}
+
 func (ec *EVMContract) pack(name string, args ...interface{}) ([]byte, error) {
 	data, err := ec.abi.Pack(name, args...)
 	if err != nil {
@@ -207,6 +211,9 @@ func (ec *EVMContract) pack(name string, args ...interface{}) ([]byte, error) {
 	return data, nil
 }
 
+func (ec *EVMContract) Unpack(name string, bz []byte) ([]interface{}, error) {
+	return ec.unpack(name, bz)
+}
 func (ec *EVMContract) unpack(name string, bz []byte) ([]interface{}, error) {
 	r, err := ec.abi.Unpack(name, bz)
 	if err != nil {
