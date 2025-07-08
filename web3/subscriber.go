@@ -9,16 +9,18 @@ import (
 )
 
 type Subscriber struct {
-	url  string
-	conn *websocket.Conn
-
+	url   string
+	conn  *websocket.Conn
 	query string
-	mtx   sync.Mutex
+
+	done chan struct{}
+	mtx  sync.Mutex
 }
 
 func NewSubscriber(url string) (*Subscriber, error) {
 	return &Subscriber{
-		url: url,
+		url:  url,
+		done: make(chan struct{}),
 	}, nil
 }
 
@@ -78,42 +80,57 @@ func (sub *Subscriber) Stop() {
 	if err != nil {
 		panic(err)
 	}
-	sub.query = ""
+
+	close(sub.done)
 
 	_ = sub.conn.Close()
 	sub.conn = nil
+	sub.query = ""
+
 }
+
+var wg = sync.WaitGroup{}
 
 func receiveRoutine(sub *Subscriber, callback func(*Subscriber, []byte)) {
 	for {
-		if sub.conn == nil {
+		select {
+		case <-sub.done:
 			break
-		}
-
-		ty, msg, err := sub.conn.ReadMessage()
-		if err != nil {
-			fmt.Println("error", err)
-			break
-		}
-
-		if ty == websocket.TextMessage {
-			resp := &types.JSONRpcResp{}
-			if err := json.Unmarshal(msg, resp); err != nil {
-				panic(err)
-			}
-
-			if resp.Error != nil {
-				panic(string(resp.Error))
+		default:
+			if sub.conn == nil {
 				break
 			}
 
-			if len(resp.Result) > 2 && callback != nil {
-				callback(sub, resp.Result)
+			ty, msg, err := sub.conn.ReadMessage()
+			if err != nil {
+				_, ok := <-sub.done
+				if !ok {
+					// connection is closed
+				} else {
+					fmt.Println("error", err)
+				}
+				break
 			}
-		} else {
-			fmt.Println("ReadMessage", "other type", ty, msg)
+
+			if ty == websocket.TextMessage {
+				resp := &types.JSONRpcResp{}
+				if err := json.Unmarshal(msg, resp); err != nil {
+					panic(err)
+				}
+
+				if resp.Error != nil {
+					panic(string(resp.Error))
+					break
+				}
+
+				if len(resp.Result) > 2 && callback != nil {
+					callback(sub, resp.Result)
+				}
+			} else {
+				fmt.Println("ReadMessage", "other type", ty, msg)
+			}
 		}
 	}
 
-	sub.Stop()
+	wg.Done()
 }
