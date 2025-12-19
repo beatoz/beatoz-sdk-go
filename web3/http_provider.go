@@ -7,14 +7,11 @@ import (
 	"github.com/beatoz/beatoz-sdk-go/types"
 	"io/ioutil"
 	"net/http"
-	"sync"
 )
 
 type HttpProvider struct {
 	url string
 	//httpClient *http.Client
-
-	mtx sync.RWMutex
 }
 
 func NewHttpProvider(url string, opts ...func(*HttpProvider)) *HttpProvider {
@@ -37,9 +34,7 @@ func NewHttpProvider(url string, opts ...func(*HttpProvider)) *HttpProvider {
 }
 
 func (client *HttpProvider) Call(req *types.JSONRpcReq) (*types.JSONRpcResp, error) {
-	client.mtx.Lock()
-	defer client.mtx.Unlock()
-
+	// Lock removed - http.Post is goroutine-safe and can handle concurrent calls
 	reqbz, err := json.Marshal(req)
 	if err != nil {
 		return nil, err
