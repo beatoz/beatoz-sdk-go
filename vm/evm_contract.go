@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"os"
+
 	"github.com/beatoz/beatoz-go/types"
 	rbytes "github.com/beatoz/beatoz-go/types/bytes"
 	"github.com/beatoz/beatoz-go/types/xerrors"
@@ -13,7 +15,6 @@ import (
 	ethcrypto "github.com/ethereum/go-ethereum/crypto"
 	"github.com/holiman/uint256"
 	coretypes "github.com/tendermint/tendermint/rpc/core/types"
-	"os"
 )
 
 type truffleBuildInfo struct {
@@ -146,7 +147,7 @@ func (ec *EVMContract) ExecSync(name string, args []interface{}, from *web3.Wall
 		return nil, err
 	}
 
-	if ret.Code == xerrors.ErrCodeSuccess && len(ret.Data) == types.AddrSize {
+	if ret.Code == xerrors.ErrCodeSuccess && name == "" {
 		addr0 := ethcrypto.CreateAddress(from.Address().Array20(), uint64(from.GetNonce()))
 		ec.addr = addr0[:]
 	}
