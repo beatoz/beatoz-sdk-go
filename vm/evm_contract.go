@@ -10,6 +10,7 @@ import (
 	"github.com/beatoz/beatoz-sdk-go/web3"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common/hexutil"
+	ethcrypto "github.com/ethereum/go-ethereum/crypto"
 	"github.com/holiman/uint256"
 	coretypes "github.com/tendermint/tendermint/rpc/core/types"
 	"os"
@@ -146,7 +147,8 @@ func (ec *EVMContract) ExecSync(name string, args []interface{}, from *web3.Wall
 	}
 
 	if ret.Code == xerrors.ErrCodeSuccess && len(ret.Data) == types.AddrSize {
-		ec.addr = types.Address(ret.Data)
+		addr0 := ethcrypto.CreateAddress(from.Address().Array20(), uint64(from.GetNonce()))
+		ec.addr = addr0[:]
 	}
 
 	return ret, nil
@@ -176,7 +178,8 @@ func (ec *EVMContract) ExecCommit(name string, args []interface{}, from *web3.Wa
 		return nil, err
 	}
 	if ret.CheckTx.Code == xerrors.ErrCodeSuccess && ret.DeliverTx.Code == xerrors.ErrCodeSuccess && name == "" {
-		ec.addr = types.Address(ret.DeliverTx.Data)
+		addr0 := ethcrypto.CreateAddress(from.Address().Array20(), uint64(from.GetNonce()))
+		ec.addr = addr0[:]
 	}
 
 	return ret, nil
